@@ -128,13 +128,19 @@ public final class Bootstrap {
 
     /**
      * Daemon reference.
+     * 这个变量会被赋值为org.apache.catalina.startup.Catalina这个类的实例
      */
     private Object catalinaDaemon = null;
 
+    // 三种ClassLoader
+    // 加载 common.loader 配置的类
     ClassLoader commonLoader = null;
+    // 加载 server.loader 配置的类
     ClassLoader catalinaLoader = null;
+    // 加载 shared.loader 配置的类
     ClassLoader sharedLoader = null;
 
+    // 还有这样的注释写法来做分割，所以大胆按照自己的想法写代码
 
     // -------------------------------------------------------- Private Methods
 
@@ -158,7 +164,7 @@ public final class Bootstrap {
 
     private ClassLoader createClassLoader(String name, ClassLoader parent)
         throws Exception {
-
+        // 注意，这是catalina.properties文件中读取的配置
         String value = CatalinaProperties.getProperty(name + ".loader");
         if ((value == null) || (value.equals(""))) {
             return parent;
@@ -248,7 +254,7 @@ public final class Bootstrap {
      * @throws Exception Fatal initialization error
      */
     public void init() throws Exception {
-
+        // 首先创建 commonLoader, catalinaLoader, sharedLoader三个自定义的ClassLoader
         initClassLoaders();
 
         Thread.currentThread().setContextClassLoader(catalinaLoader);
@@ -260,6 +266,7 @@ public final class Bootstrap {
             log.debug("Loading startup class");
         }
         Class<?> startupClass = catalinaLoader.loadClass("org.apache.catalina.startup.Catalina");
+        // 反射创建Catalina类的实例，作为startupInstance
         Object startupInstance = startupClass.getConstructor().newInstance();
 
         // Set the shared extensions class loader
@@ -273,6 +280,7 @@ public final class Bootstrap {
         paramValues[0] = sharedLoader;
         Method method =
             startupInstance.getClass().getMethod(methodName, paramTypes);
+        // 反射调用Catalina的setParentClassLoader方法
         method.invoke(startupInstance, paramValues);
 
         catalinaDaemon = startupInstance;
@@ -333,10 +341,15 @@ public final class Bootstrap {
 
 
     /**
+     * ！！！！！！！！！！！！！！！！！
+     * 最简要的启动方法在这里
+     *
      * Start the Catalina daemon.
      * @throws Exception Fatal start error
      */
     public void start() throws Exception {
+        // 如果还没有初始化，那么就先初始化
+        // 但其实，正常，上层调用，已经做了初始化了
         if (catalinaDaemon == null) {
             init();
         }
@@ -430,6 +443,12 @@ public final class Bootstrap {
 
 
     /**
+     *
+     * ！！！！！！！！！！！！！！！！！！！！！！！！！！
+     * 通过脚本启动的启动入口
+     * ！！！！！！！！！！！！！！！！！！！！！！！！！！
+     *
+     *
      * Main method and entry point when starting Tomcat via the provided
      * scripts.
      *
@@ -458,7 +477,8 @@ public final class Bootstrap {
         }
 
         try {
-            String command = "start";
+            String command = "start";  // 也就是命令是start
+            // 提取最后一个参数作为要执行的命令，这个可以去看一下catalina.sh，确实最后一个参数是命名
             if (args.length > 0) {
                 command = args[args.length - 1];
             }
