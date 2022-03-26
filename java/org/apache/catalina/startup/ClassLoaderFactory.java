@@ -237,8 +237,10 @@ public final class ClassLoaderFactory {
         return AccessController.doPrivileged(
                 (PrivilegedAction<URLClassLoader>) () -> {
                     if (parent == null) {
+                        // 创建自定义的ClassLoader，只加载指定的（URL）位置下(也就是array)的类
                         return new URLClassLoader(array);
                     } else {
+                        // 创建自定义的ClassLoader，只加载指定的（URL）位置下(也就是array)的类
                         return new URLClassLoader(array, parent);
                     }
                 });

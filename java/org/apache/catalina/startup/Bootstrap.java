@@ -34,6 +34,9 @@ import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 
 /**
+ *
+ * 这段话值得继续研读
+ *
  * Bootstrap loader for Catalina.  This application constructs a class loader
  * for use in loading the Catalina internal classes (by accumulating all of the
  * JAR files found in the "server" directory under "catalina.home"), and
@@ -310,6 +313,7 @@ public final class Bootstrap {
         if (log.isDebugEnabled()) {
             log.debug("Calling startup class " + method);
         }
+        // 反射调用Catalina的load方法
         method.invoke(catalinaDaemon, param);
     }
 
@@ -353,7 +357,8 @@ public final class Bootstrap {
         if (catalinaDaemon == null) {
             init();
         }
-
+        // 反射调用Catalina的start方法
+        // 之所以，反射调用，我看到的表层原因是：catalinaDaemon是Object类型，不是Catalina类型
         Method method = catalinaDaemon.getClass().getMethod("start", (Class [])null);
         method.invoke(catalinaDaemon, (Object [])null);
     }

@@ -40,6 +40,10 @@ public class CatalinaProperties {
     private static Properties properties = null;
 
 
+    /*
+     * CatalinaProperties这个类加载的时候，
+     * 就读取配置文件，并转换properties
+     */
     static {
         loadProperties();
     }
@@ -62,6 +66,7 @@ public class CatalinaProperties {
         InputStream is = null;
         String fileName = "catalina.properties";
 
+        // 优先 尝试读取系统变量catalina.config指定的配置文件
         try {
             String configUrl = System.getProperty("catalina.config");
             if (configUrl != null) {
@@ -79,8 +84,10 @@ public class CatalinaProperties {
         if (is == null) {
             try {
                 File home = new File(Bootstrap.getCatalinaBase());
-                File conf = new File(home, "conf");
-                File propsFile = new File(conf, fileName);
+                // Tomcat zip包解压后，进入就有一个conf目录
+                // conf目录下面，就有一个catalina.properties文件
+                File conf = new File(home, "conf"); // conf目录
+                File propsFile = new File(conf, fileName); // conf目录下的catalina.properties文件
                 is = new FileInputStream(propsFile);
             } catch (Throwable t) {
                 handleThrowable(t);
@@ -99,6 +106,14 @@ public class CatalinaProperties {
         if (is != null) {
             try {
                 properties = new Properties();
+                /*
+                 * !!!!!!!!!!!!!!!!!!!!!!
+                 *
+                 * 全世界读取properties文件都是这套路，都是一样的。
+                 * 都是读取文件，转为inputStream，然后，再使用Properties的load方法，从inputStream读取内容，填充properties对象。
+                 *
+                 * !!!!!!!!!!!!!!!!!!!!!!
+                 */
                 properties.load(is);
             } catch (Throwable t) {
                 handleThrowable(t);

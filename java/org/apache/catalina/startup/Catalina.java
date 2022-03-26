@@ -92,6 +92,9 @@ public class Catalina {
 
     /**
      * Pathname to the server configuration file.
+     *
+     * server配置文件的位置就是，conf/server.xml
+     *
      */
     protected String configFile = SERVER_XML;
 
@@ -129,12 +132,17 @@ public class Catalina {
 
     /**
      * Prevent duplicate loads.
+     *
+     * loaded这个变量是防止重复加载的
      */
     protected boolean loaded = false;
 
 
     /**
      * Generate Tomcat embedded code from configuration files.
+     *
+     * 这个参数还要研读！
+     *
      */
     protected boolean generateCode = false;
 
@@ -345,6 +353,9 @@ public class Catalina {
 
     /**
      * Return a File object representing our configuration file.
+     * <p>
+     * 返回conf/server.xml配置文件的File对象。
+     *
      * @return the main configuration file
      */
     protected File configFile() {
@@ -558,6 +569,9 @@ public class Catalina {
             // Load loader
             String loaderClassName = generatedCodePackage + ".DigesterGeneratedCodeLoader";
             try {
+                // 用加载Catalina这个类的类加载器来加载，自动生成代码的那个类
+                // 加载完后，用反射生成一个这个类的实例。
+                // 看名称就知道，Digester.GeneratedCodeLoader，生成代码的加载器
                 Digester.GeneratedCodeLoader loader = (Digester.GeneratedCodeLoader)
                         Catalina.class.getClassLoader().loadClass(loaderClassName).getDeclaredConstructor().newInstance();
                 Digester.setGeneratedCodeLoader(loader);
@@ -690,6 +704,9 @@ public class Catalina {
 
     /**
      * Start a new server instance.
+     *
+     * 注意，这里是加载一个Server实例！！！
+     *
      */
     public void load() {
 
@@ -707,6 +724,7 @@ public class Catalina {
 
         // Parse main server.xml
         parseServerXml(true);
+        // 上面跑得parserServerXml没啥问题，这里就会getServer()就能取到一个Server实例，不会是null
         Server s = getServer();
         if (s == null) {
             return;
@@ -945,6 +963,8 @@ public class Catalina {
         }
         code.append("default: return null; }").append(System.lineSeparator());
         code.append("}}").append(System.lineSeparator());
+
+        // 生成源码Java文件
         File loaderLocation = new File(generatedCodeLocation, generatedCodePackage);
         try (FileWriter writer = new FileWriter(new File(loaderLocation, loaderClassName + ".java"))) {
             writer.write(code.toString());
@@ -954,7 +974,9 @@ public class Catalina {
         }
     }
 
-
+    /**
+     * 生成ServerXml接口实现类代码的头部Header
+     */
     protected void generateClassHeader(Digester digester, boolean start) {
         StringBuilder code = digester.getGeneratedCode();
         code.append("package ").append(generatedCodePackage).append(";").append(System.lineSeparator());
@@ -968,14 +990,17 @@ public class Catalina {
         code.append(' ').append(digester.toVariableName(this)).append(") {").append(System.lineSeparator());
     }
 
-
+    /**
+     * 生成ServerXml口实现类代码的Footer
+     */
     protected void generateClassFooter(Digester digester) {
         StringBuilder code = digester.getGeneratedCode();
         code.append('}').append(System.lineSeparator());
         code.append('}').append(System.lineSeparator());
     }
 
-
+    // 注意：ServerXml接口的实现类是不存在的。
+    // 是代码自动生成的！！！
     public interface ServerXml {
         public void load(Catalina catalina);
     }
