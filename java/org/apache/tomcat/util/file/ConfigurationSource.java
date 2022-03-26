@@ -83,6 +83,10 @@ public interface ConfigurationSource {
     /**
      * Represents a resource: a stream to the resource associated with
      * its URI.
+     *
+     * 其实，源码看多了，会发现：
+     * 所有组件、框架，自己定义的Resource类或者接口，都会有一个getInputStream()方法，或者实现类持有一个InputStream实例.
+     *
      */
     public class Resource implements AutoCloseable {
         private final InputStream inputStream;
