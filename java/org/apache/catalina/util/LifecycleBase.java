@@ -30,6 +30,10 @@ import org.apache.tomcat.util.ExceptionUtils;
 import org.apache.tomcat.util.res.StringManager;
 
 /**
+ *
+ * LifecycleBase是Lifecycle接口的基本实现。
+ * 主要是是是实现了start和stop两个接口方法。
+ * <p>
  * Base implementation of the {@link Lifecycle} interface that implements the
  * state transition rules for {@link Lifecycle#start()} and
  * {@link Lifecycle#stop()}

@@ -17,6 +17,13 @@
 package org.apache.catalina;
 
 /**
+ *
+ * 实现了Lifecycle接口的组件，都会有以下定义的状态。
+ * 为什么是组件s呢？因为真的很多是实现了Lifecycle接口，比如Server，Service，Engine等等
+ *
+ * 状态流转图写在了Lifecycle这个类的代码注释里面。
+ *
+ * <p>
  * The list of valid states for components that implement {@link Lifecycle}.
  * See {@link Lifecycle} for the state transition diagram.
  */
