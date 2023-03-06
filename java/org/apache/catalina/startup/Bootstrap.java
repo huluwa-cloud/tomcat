@@ -483,7 +483,7 @@ public final class Bootstrap {
 
         try {
             String command = "start";  // 也就是命令是start
-            // 提取最后一个参数作为要执行的命令，这个可以去看一下catalina.sh，确实最后一个参数是命名
+            // 提取最后一个参数作为要执行的命令，这个可以去看一下catalina.sh，确实最后一个参数是命令
             if (args.length > 0) {
                 command = args[args.length - 1];
             }

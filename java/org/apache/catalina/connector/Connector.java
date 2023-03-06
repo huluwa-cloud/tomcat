@@ -50,7 +50,11 @@ import org.apache.tomcat.util.res.StringManager;
 
 
 /**
+ * <p>
+ * 土狼(丛林)狼连接器的一个实现
+ *
  * Implementation of a Coyote connector.
+ *
  *
  * @author Craig R. McClanahan
  * @author Remy Maucherat

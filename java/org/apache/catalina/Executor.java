@@ -18,6 +18,10 @@ package org.apache.catalina;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Tomcat 的Executor继承了JDK的Executor接口，而且还继承了自己定义Lifecycle接口。
+ * 也就是，Tomcat会自己管理自己的线程池的生命周期。
+ */
 public interface Executor extends java.util.concurrent.Executor, Lifecycle {
 
     public String getName();
